@@ -30,7 +30,7 @@ function typeText(element, text) {
     }
   }, 20)
 }
-function generateUniqeId() {
+function generateUniqueId() {
   const timestamp = Date.now();
   const randomNumber = Math.random();
   const hexadecimalString = randomNumber.toString(16);
@@ -65,7 +65,7 @@ const handleSubmit = async (e) => {
   form.reset();
 
   //bot's chatstripe
-  const uniqueId = generateUniqeId();
+  const uniqueId = generateUniqueId();
   chatContainer.innerHTML += chatStripe(true, " ", uniqueId);
 
   //to focus scroll to the bottom
@@ -77,15 +77,24 @@ const handleSubmit = async (e) => {
   //fetch data from server -> bot's response
   //https://chatgpt-test-qpz7.onrender.com/ <-->http://localhost:5000/
 
-  const response = await fetch('https://chatgpt-test-qpz7.onrender.com/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      prompt: data.get('prompt')
-    })
-  })
+
+  const timeout = new Promise((resolve, reject) =>{
+    setTimeout(()=>{
+      reject(new Error('Request timed out'));
+    },5000);//timeout süresi 5 saniye
+  });
+  const response = await Promise.race([
+    fetch('https://chatgpt-test-qpz7.onrender.com/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: data.get('prompt')
+      })
+  }),
+  timeout
+]);
   clearInterval(loadInterval);
   messageDiv.innerHTML = '';
 
