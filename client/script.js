@@ -77,12 +77,12 @@ const handleSubmit = async (e) => {
   //fetch data from server -> bot's response
   //https://chatgpt-test-qpz7.onrender.com/ <-->http://localhost:5000/
 
-
-  const timeout = new Promise((resolve, reject) =>{
-    setTimeout(()=>{
+  const timeout = new Promise((resolve, reject) => {
+    setTimeout(() => {
       reject(new Error('Request timed out'));
-    },5000);//timeout süresi 5 saniye
+    }, 5000); // timeout süresi 5 saniye
   });
+
   const response = await Promise.race([
     fetch('https://chatgpt-test-qpz7.onrender.com/', {
       method: 'POST',
@@ -92,9 +92,10 @@ const handleSubmit = async (e) => {
       body: JSON.stringify({
         prompt: data.get('prompt')
       })
-  }),
-  timeout
-]);
+    }),
+    timeout
+  ]);
+  
   clearInterval(loadInterval);
   messageDiv.innerHTML = '';
 
