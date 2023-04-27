@@ -89,9 +89,16 @@ const handleSubmit = async (e) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY, // API anahtarını buraya ekle
       },
       body: JSON.stringify({
-        prompt: data.get('prompt')
+        model: 'text-davinci-002',
+        prompt: data.get('prompt'),
+        temperature: 0.5,
+        max_tokens: 60,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
       })
   }),
   timeout
@@ -101,7 +108,7 @@ const handleSubmit = async (e) => {
 
   if (response.ok) {
     const data = await response.json();
-    const parsedData = data.bot.trim();
+    const parsedData = data.choices[0].text.trim();
 
     typeText(messageDiv, parsedData);
   } else {
